@@ -12,7 +12,7 @@ export default function ModelList({ date, models }: Props) {
     <div
       style={{
         marginBottom: "1.5rem",
-        backgroundColor: "#FFF7FB", // ふわっとした薄いピンク
+        backgroundColor: "#FFF7FB",
         padding: "1rem",
         borderRadius: "8px",
         boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)"
@@ -33,10 +33,10 @@ export default function ModelList({ date, models }: Props) {
           <li
             key={model.id}
             style={{
-              marginBottom: "1rem"
+              marginBottom: "1rem",
+              textAlign: "center"
             }}
           >
-            {/* x_url がある場合のみリンクにする */}
             {model.x_url
               ? <a
                   href={model.x_url}
@@ -44,6 +44,7 @@ export default function ModelList({ date, models }: Props) {
                   rel="noopener noreferrer"
                   style={{
                     display: "flex",
+                    flexDirection: "column",
                     alignItems: "center",
                     textDecoration: "none"
                   }}
@@ -53,17 +54,16 @@ export default function ModelList({ date, models }: Props) {
                       src={model.image_url}
                       alt={model.name}
                       style={{
-                        width: "64px",
-                        height: "64px",
+                        width: "128px",
+                        height: "128px",
                         objectFit: "cover",
                         borderRadius: "50%",
-                        marginRight: "1rem",
+                        marginBottom: "0.5rem",
                         boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)"
                       }}
                     />}
                   <span
                     style={{
-                      verticalAlign: "middle",
                       color: "#FF69B4",
                       fontWeight: "bold",
                       fontSize: "1.1rem"
@@ -72,24 +72,28 @@ export default function ModelList({ date, models }: Props) {
                     {model.name}
                   </span>
                 </a>
-              : /* x_url が無いときはリンクなし */
-                <div style={{ display: "flex", alignItems: "center" }}>
+              : <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center"
+                  }}
+                >
                   {model.image_url &&
                     <img
                       src={model.image_url}
                       alt={model.name}
                       style={{
-                        width: "64px",
-                        height: "64px",
+                        width: "128px",
+                        height: "128px",
                         objectFit: "cover",
                         borderRadius: "50%",
-                        marginRight: "1rem",
+                        marginBottom: "0.5rem",
                         boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)"
                       }}
                     />}
                   <span
                     style={{
-                      verticalAlign: "middle",
                       color: "#FF69B4",
                       fontWeight: "bold",
                       fontSize: "1.1rem"

@@ -21,7 +21,6 @@ export default async function Page() {
     .order("date", { ascending: true });
 
   if (error) {
-    console.error("Error fetching data:", error);
     return (
       <div style={{ padding: "2rem", textAlign: "center", color: "#FF6F91" }}>
         <p>データ取得に失敗しました。</p>
@@ -30,7 +29,6 @@ export default async function Page() {
   }
 
   if (!events || events.length === 0) {
-    console.log("No data found.");
     return (
       <div style={{ padding: "2rem", textAlign: "center", color: "#FF6F91" }}>
         <p>データがありません。</p>
@@ -45,10 +43,10 @@ export default async function Page() {
   return (
     <div
       style={{
-        backgroundColor: "#FFE9EE", // ほんのりピンク
+        backgroundColor: "#FFE9EE",
         padding: "2rem",
         borderRadius: "12px",
-        fontFamily: "'Comic Sans MS', cursive, sans-serif", // ゆるっとカワイイ雰囲気
+        fontFamily: "'Comic Sans MS', cursive, sans-serif",
         maxWidth: "800px",
         margin: "2rem auto",
         color: "#555"
