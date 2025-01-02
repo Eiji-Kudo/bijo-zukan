@@ -6,6 +6,7 @@ erDiagram
         string id PK
         string x_url
         string name
+        string image_url
     }
     
     events {
