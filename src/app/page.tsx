@@ -16,7 +16,7 @@ export default async function Page() {
           image_url,
           x_url
         )
-      `
+      `,
     )
     .order("date", { ascending: true });
 
@@ -49,7 +49,7 @@ export default async function Page() {
         fontFamily: "'Comic Sans MS', cursive, sans-serif",
         maxWidth: "800px",
         margin: "2rem auto",
-        color: "#555"
+        color: "#555",
       }}
     >
       <h1
@@ -57,14 +57,14 @@ export default async function Page() {
           fontSize: "2rem",
           textAlign: "center",
           color: "#FF69B4",
-          marginBottom: "1.5rem"
+          marginBottom: "1.5rem",
         }}
       >
         ＊開催日ごとのモデル一覧＊
       </h1>
-      {Object.entries(groupedByDate).map(([date, models]) =>
+      {Object.entries(groupedByDate).map(([date, models]) => (
         <ModelList key={date} date={date} models={models} />
-      )}
+      ))}
     </div>
   );
 }

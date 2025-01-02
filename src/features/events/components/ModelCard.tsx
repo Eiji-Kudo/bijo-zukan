@@ -17,7 +17,7 @@ export function ModelCard({ model }: Props) {
             objectFit: "cover",
             borderRadius: "50%",
             marginBottom: "0.5rem",
-            boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)"
+            boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
           }}
         />
       )}
@@ -25,7 +25,7 @@ export function ModelCard({ model }: Props) {
         style={{
           color: "#FF69B4",
           fontWeight: "bold",
-          fontSize: "1.1rem"
+          fontSize: "1.1rem",
         }}
       >
         {model.name}
@@ -37,7 +37,7 @@ export function ModelCard({ model }: Props) {
     display: "flex",
     flexDirection: "column" as const,
     alignItems: "center",
-    textDecoration: "none"
+    textDecoration: "none",
   };
 
   return model.x_url ? (
@@ -54,4 +54,4 @@ export function ModelCard({ model }: Props) {
       <CardContent />
     </div>
   );
-} 
+}

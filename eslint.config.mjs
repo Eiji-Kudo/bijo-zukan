@@ -18,10 +18,13 @@ const eslintConfig = [
       "react/react-in-jsx-scope": "off",
       "react/prop-types": "off",
       "import/no-default-export": "error",
-      "@typescript-eslint/no-unused-vars": ["error", {
-        "argsIgnorePattern": "^_",
-        "varsIgnorePattern": "^_"
-      }]
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          argsIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+        },
+      ],
     },
     settings: {
       react: {
@@ -30,12 +33,17 @@ const eslintConfig = [
     },
   },
   {
-    files: ["**/pages/**/*", "**/pages/api/**/*", "**/layout.tsx", "**/page.tsx"],
+    files: [
+      "**/pages/**/*",
+      "**/pages/api/**/*",
+      "**/layout.tsx",
+      "**/page.tsx",
+    ],
     rules: {
       "import/no-default-export": "off",
       "import/prefer-default-export": "error",
     },
-  }
+  },
 ];
 
 export default eslintConfig;

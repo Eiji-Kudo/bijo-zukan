@@ -6,9 +6,10 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint --fix",
+    "lint": "next lint",
     "ts:test": "tsc --noEmit",
-    "prepare": "husky"
+    "prepare": "husky",
+    "format": "npx prettier --write ."
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.47.10",

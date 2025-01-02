@@ -16,7 +16,7 @@ export function ModelList({ date, models }: Props) {
         backgroundColor: "#FFF7FB",
         padding: "1rem",
         borderRadius: "8px",
-        boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)"
+        boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
       }}
     >
       <h2
@@ -24,23 +24,23 @@ export function ModelList({ date, models }: Props) {
           marginBottom: "0.5rem",
           color: "#FF6F91",
           fontSize: "1.5rem",
-          textAlign: "center"
+          textAlign: "center",
         }}
       >
         {date}開催
       </h2>
       <ul style={{ listStyle: "none", paddingLeft: 0 }}>
-        {models.map(model =>
+        {models.map((model) => (
           <li
             key={model.id}
             style={{
               marginBottom: "1rem",
-              textAlign: "center"
+              textAlign: "center",
             }}
           >
             <ModelCard model={model} />
           </li>
-        )}
+        ))}
       </ul>
     </div>
   );
