@@ -33,34 +33,71 @@ export default function ModelList({ date, models }: Props) {
           <li
             key={model.id}
             style={{
-              marginBottom: "1rem",
-              display: "flex",
-              alignItems: "center"
+              marginBottom: "1rem"
             }}
           >
-            {model.image_url &&
-              <img
-                src={model.image_url}
-                alt={model.name}
-                style={{
-                  width: "64px",
-                  height: "64px",
-                  objectFit: "cover",
-                  borderRadius: "50%",
-                  marginRight: "1rem",
-                  boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)"
-                }}
-              />}
-            <span
-              style={{
-                verticalAlign: "middle",
-                color: "#FF69B4",
-                fontWeight: "bold",
-                fontSize: "1.1rem"
-              }}
-            >
-              {model.name}
-            </span>
+            {/* x_url がある場合のみリンクにする */}
+            {model.x_url
+              ? <a
+                  href={model.x_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    textDecoration: "none"
+                  }}
+                >
+                  {model.image_url &&
+                    <img
+                      src={model.image_url}
+                      alt={model.name}
+                      style={{
+                        width: "64px",
+                        height: "64px",
+                        objectFit: "cover",
+                        borderRadius: "50%",
+                        marginRight: "1rem",
+                        boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)"
+                      }}
+                    />}
+                  <span
+                    style={{
+                      verticalAlign: "middle",
+                      color: "#FF69B4",
+                      fontWeight: "bold",
+                      fontSize: "1.1rem"
+                    }}
+                  >
+                    {model.name}
+                  </span>
+                </a>
+              : /* x_url が無いときはリンクなし */
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  {model.image_url &&
+                    <img
+                      src={model.image_url}
+                      alt={model.name}
+                      style={{
+                        width: "64px",
+                        height: "64px",
+                        objectFit: "cover",
+                        borderRadius: "50%",
+                        marginRight: "1rem",
+                        boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)"
+                      }}
+                    />}
+                  <span
+                    style={{
+                      verticalAlign: "middle",
+                      color: "#FF69B4",
+                      fontWeight: "bold",
+                      fontSize: "1.1rem"
+                    }}
+                  >
+                    {model.name}
+                  </span>
+                </div>}
           </li>
         )}
       </ul>

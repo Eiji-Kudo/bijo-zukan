@@ -13,7 +13,8 @@ export default async function Page() {
         models (
           id,
           name,
-          image_url
+          image_url,
+          x_url
         )
       `
     )
