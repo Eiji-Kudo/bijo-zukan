@@ -1,3 +1,4 @@
+```mermaid
 erDiagram
     model ||--o{ event_date : has
     model {
@@ -9,3 +10,4 @@ erDiagram
         date date
         string model_id
     }
+```
