@@ -1,27 +1,39 @@
-// 例: app/page.tsx (サーバーコンポーネント)
-// or  クライアントコンポーネントなどから fetch してもOK
+// app/page.tsx or app/someServerComponent.tsx
+
 import { createClient } from "@supabase/supabase-js";
+
+// モデルの型定義（任意）
+type Model = {
+  id: string;
+  name: string;
+  image_url?: string;
+};
+
+// Supabase が返す events テーブルの型（必要に応じて拡張可）
+type EventRecord = {
+  date: string;
+  models: Model[] | Model; // リレーション設定によっては配列かオブジェクト
+};
 
 export default async function Page() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL as string;
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string;
   const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-  // ここでは「date」「models」の情報を取得
-  // ※ Supabaseリレーション設定をしている場合:
-  //    .select('date, models (id, name, image_url)') のように書ける
-  //    していない場合: .select('*') などで実際のカラムに合わせて調整
+  // 1. イベントデータを取得
+  //   ※ リレーション設定済みなら、.select("date, models (*)") などでOK
+  //   ※ されていないなら JOIN 相当のクエリで別テーブルを結合する必要あり
   const { data: events, error } = await supabase
     .from("events")
     .select(
       `
-        date,
-        models (
-          id,
-          name,
-          image_url
-        )
-      `
+      date,
+      models (
+        id,
+        name,
+        image_url
+      )
+    `
     )
     .order("date", { ascending: true });
 
@@ -35,31 +47,64 @@ export default async function Page() {
     return <p>データがありません。</p>;
   }
 
-  // まずは取得結果を確認
-  console.log("Fetched Events:", events);
-
-  // 日付ごとにグルーピングする (もし models が配列ならそのまま push できます)
-  // ここでは .reduce() を使った例
-  const eventsByDate = events.reduce<Record<string, any[]>>((acc, event) => {
-    const date = event.date;
-    if (!acc[date]) {
-      acc[date] = [];
+  // 2. 取得したデータを日付ごとにグルーピング
+  //    events はこんなイメージ:
+  //    [
+  //      { date: '2025-01-04', models: [{id:'...', name:'...', ...}, ...] },
+  //      { date: '2025-01-05', models: {...} }, ...
+  //    ]
+  const groupedByDate = events.reduce<
+    Record<string, Model[]>
+  >((acc, event: EventRecord) => {
+    const dateKey = event.date;
+    if (!acc[dateKey]) {
+      acc[dateKey] = [];
     }
-    // event.models がオブジェクトなら配列に変換する必要がある
-    // もし最初から配列なら [...acc[date], ...event.models]
+    // models が配列の場合（複数出演モデル）
     if (Array.isArray(event.models)) {
-      // 複数モデル
-      acc[date].push(...event.models);
+      acc[dateKey].push(...event.models);
     } else {
-      // 単一モデル
-      acc[date].push(event.models);
+      // models がオブジェクト（1モデルしかない）なら配列に変換して push
+      acc[dateKey].push(event.models);
     }
-
     return acc;
   }, {});
 
-  console.log("Grouped by date:", eventsByDate);
+  console.log("Grouped by date:", groupedByDate);
 
-  // この後は、必要に応じて JSX にして画面表示するなど
-  return <p>データ取得＆グルーピングしました。コンソールを確認してください。</p>;
+  // 3. 日付ごとにモデルを表示するビューパート
+  return (
+    <div style={{ padding: "2rem" }}>
+      <h1>開催日ごとのモデル一覧</h1>
+      {Object.entries(groupedByDate).map(([date, models]) =>
+        <div key={date} style={{ marginBottom: "1.5rem" }}>
+          <h2 style={{ marginBottom: "0.5rem" }}>
+            {date}
+          </h2>
+          <ul style={{ listStyle: "none", paddingLeft: 0 }}>
+            {models.map(model =>
+              <li key={model.id} style={{ marginBottom: "1rem" }}>
+                {/* 画像がある場合のみ表示 */}
+                {model.image_url &&
+                  <img
+                    src={model.image_url}
+                    alt={model.name}
+                    style={{
+                      width: "80px",
+                      height: "80px",
+                      objectFit: "cover",
+                      borderRadius: "50%",
+                      marginRight: "1rem"
+                    }}
+                  />}
+                <span style={{ verticalAlign: "middle" }}>
+                  {model.name}
+                </span>
+              </li>
+            )}
+          </ul>
+        </div>
+      )}
+    </div>
+  );
 }
