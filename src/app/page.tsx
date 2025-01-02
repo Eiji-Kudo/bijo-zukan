@@ -1,175 +1,65 @@
-"use client";
-
+// 例: app/page.tsx (サーバーコンポーネント)
+// or  クライアントコンポーネントなどから fetch してもOK
 import { createClient } from "@supabase/supabase-js";
-import Image from "next/image";
-import { useEffect, useState } from "react";
 
-// 1. Supabaseクライアントの作成
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL as string;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string;
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
+export default async function Page() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL as string;
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string;
+  const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-// 2. Type definitions
-type Model = {
-  id: string;
-  name: string;
-  image_url: string | null;
-};
-
-type Event = {
-  id: string;
-  date: string;
-  models: Model[]; // <-- multiple models per event
-};
-
-export default function Home() {
-  const [eventsByDate, setEventsByDate] = useState<Record<string, Model[]>>({});
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
-  useEffect(() => {
-    // 3. Fetch data from Supabase
-    const fetchEvents = async () => {
-      const { data: events, error } = await supabase
-        .from("events")
-        .select(
-          `
+  // ここでは「date」「models」の情報を取得
+  // ※ Supabaseリレーション設定をしている場合:
+  //    .select('date, models (id, name, image_url)') のように書ける
+  //    していない場合: .select('*') などで実際のカラムに合わせて調整
+  const { data: events, error } = await supabase
+    .from("events")
+    .select(
+      `
+        date,
+        models (
           id,
-          date,
-          models (
-            id,
-            name,
-            image_url
-          )
-        `
+          name,
+          image_url
         )
-        .order("date", { ascending: true });
+      `
+    )
+    .order("date", { ascending: true });
 
-      if (error) {
-        setErrorMessage("データ取得でエラーが発生しました。");
-        console.error(error);
-        return;
-      }
+  if (error) {
+    console.error("Error fetching data:", error);
+    return <p>データ取得に失敗しました。</p>;
+  }
 
-      if (!events || events.length === 0) {
-        setErrorMessage("データが見つかりませんでした。");
-        return;
-      }
+  if (!events || events.length === 0) {
+    console.log("No data found.");
+    return <p>データがありません。</p>;
+  }
 
-      // Optional: See exactly what shape Supabase is returning
-      console.log("Events from Supabase:", events);
+  // まずは取得結果を確認
+  console.log("Fetched Events:", events);
 
-      // 4. Group by date
-      const grouped = events.reduce<
-        Record<string, Model[]>
-      >((acc, event: Event) => {
-        if (!acc[event.date]) {
-          acc[event.date] = [];
-        }
-        // event.models is an array, so spread it
-        acc[event.date].push(...event.models);
-        return acc;
-      }, {});
+  // 日付ごとにグルーピングする (もし models が配列ならそのまま push できます)
+  // ここでは .reduce() を使った例
+  const eventsByDate = events.reduce<Record<string, any[]>>((acc, event) => {
+    const date = event.date;
+    if (!acc[date]) {
+      acc[date] = [];
+    }
+    // event.models がオブジェクトなら配列に変換する必要がある
+    // もし最初から配列なら [...acc[date], ...event.models]
+    if (Array.isArray(event.models)) {
+      // 複数モデル
+      acc[date].push(...event.models);
+    } else {
+      // 単一モデル
+      acc[date].push(event.models);
+    }
 
-      setEventsByDate(grouped);
-    };
+    return acc;
+  }, {});
 
-    fetchEvents();
-  }, []);
+  console.log("Grouped by date:", eventsByDate);
 
-  // 5. Cute styling
-  const containerStyle: React.CSSProperties = {
-    backgroundColor: "#FFF0F6",
-    padding: "2rem",
-    fontFamily: "cursive, sans-serif",
-    minHeight: "100vh"
-  };
-
-  const headingStyle: React.CSSProperties = {
-    color: "#FF66B3",
-    textAlign: "center",
-    marginBottom: "1rem"
-  };
-
-  const subHeadingStyle: React.CSSProperties = {
-    color: "#FF66B3",
-    margin: "1rem 0 0.5rem 0",
-    borderBottom: "2px dashed #FFAFD2",
-    display: "inline-block",
-    paddingBottom: "0.25rem"
-  };
-
-  const listStyle: React.CSSProperties = {
-    listStyle: "none",
-    padding: 0
-  };
-
-  const listItemStyle: React.CSSProperties = {
-    display: "flex",
-    alignItems: "center",
-    backgroundColor: "#FFFFFF",
-    borderRadius: "12px",
-    boxShadow: "0 4px 8px rgba(255, 102, 179, 0.1)",
-    marginBottom: "1rem",
-    padding: "1rem"
-  };
-
-  const nameStyle: React.CSSProperties = {
-    margin: 0,
-    fontWeight: "bold",
-    color: "#FF66B3",
-    fontSize: "1.1rem"
-  };
-
-  return (
-    <div style={containerStyle}>
-      <h1 style={headingStyle}>開催日ごとのモデル一覧</h1>
-
-      {errorMessage &&
-        <p
-          style={{
-            color: "#D8000C",
-            backgroundColor: "#FFBABA",
-            padding: "1rem",
-            borderRadius: "8px",
-            textAlign: "center"
-          }}
-        >
-          {errorMessage}
-        </p>}
-
-      {!errorMessage &&
-        Object.keys(eventsByDate).length === 0 &&
-        <p style={{ textAlign: "center", color: "#999" }}>データがありません。</p>}
-
-      {/* 開催日ごとに表示 */}
-      {Object.entries(eventsByDate).map(([date, models]) =>
-        <div key={date}>
-          <h2 style={subHeadingStyle}>
-            {date}
-          </h2>
-          <ul style={listStyle}>
-            {models.map(model =>
-              <li key={model.id} style={listItemStyle}>
-                {model.image_url &&
-                  <Image
-                    src={model.image_url}
-                    alt={model.name}
-                    width={80}
-                    height={80}
-                    style={{
-                      objectFit: "cover",
-                      borderRadius: "50%",
-                      marginRight: "1rem"
-                    }}
-                  />}
-                <p style={nameStyle}>
-                  {model.name}
-                </p>
-              </li>
-            )}
-          </ul>
-        </div>
-      )}
-    </div>
-  );
+  // この後は、必要に応じて JSX にして画面表示するなど
+  return <p>データ取得＆グルーピングしました。コンソールを確認してください。</p>;
 }
