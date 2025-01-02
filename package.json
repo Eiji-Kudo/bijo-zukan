@@ -6,7 +6,7 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "next lint && npx prettier --check .",
     "ts:test": "tsc --noEmit",
     "prepare": "husky",
     "format": "npx prettier --write ."
