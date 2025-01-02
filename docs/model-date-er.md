@@ -1,13 +1,25 @@
 ```mermaid
 erDiagram
-    model ||--o{ event_date : has
-    model {
-        string id
+    models ||--o{ events : "has many"
+    
+    models {
+        string id PK
         string x_url
         string name
     }
-    event_date {
+    
+    events {
+        string id PK
         date date
-        string model_id
+        string model_id FK
+        string location_id FK
+    }
+    
+    locations ||--o{ events : "has many"
+    
+    locations {
+        string id PK
+        string name
+        string address
     }
 ```
