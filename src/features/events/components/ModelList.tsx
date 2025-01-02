@@ -1,5 +1,6 @@
 "use client";
 
+import { ModelCard } from "@/src/features/events/components/ModelCard";
 import { Model } from "@/types";
 
 type Props = {
@@ -7,7 +8,7 @@ type Props = {
   models: Model[];
 };
 
-export default function ModelList({ date, models }: Props) {
+export function ModelList({ date, models }: Props) {
   return (
     <div
       style={{
@@ -37,71 +38,7 @@ export default function ModelList({ date, models }: Props) {
               textAlign: "center"
             }}
           >
-            {model.x_url
-              ? <a
-                  href={model.x_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    textDecoration: "none"
-                  }}
-                >
-                  {model.image_url &&
-                    <img
-                      src={model.image_url}
-                      alt={model.name}
-                      style={{
-                        width: "128px",
-                        height: "128px",
-                        objectFit: "cover",
-                        borderRadius: "50%",
-                        marginBottom: "0.5rem",
-                        boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)"
-                      }}
-                    />}
-                  <span
-                    style={{
-                      color: "#FF69B4",
-                      fontWeight: "bold",
-                      fontSize: "1.1rem"
-                    }}
-                  >
-                    {model.name}
-                  </span>
-                </a>
-              : <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center"
-                  }}
-                >
-                  {model.image_url &&
-                    <img
-                      src={model.image_url}
-                      alt={model.name}
-                      style={{
-                        width: "128px",
-                        height: "128px",
-                        objectFit: "cover",
-                        borderRadius: "50%",
-                        marginBottom: "0.5rem",
-                        boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)"
-                      }}
-                    />}
-                  <span
-                    style={{
-                      color: "#FF69B4",
-                      fontWeight: "bold",
-                      fontSize: "1.1rem"
-                    }}
-                  >
-                    {model.name}
-                  </span>
-                </div>}
+            <ModelCard model={model} />
           </li>
         )}
       </ul>

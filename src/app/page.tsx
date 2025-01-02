@@ -1,5 +1,5 @@
 import { supabase } from "@/lib/supabase";
-import ModelList from "@/src/features/events/components/ModelList";
+import { ModelList } from "@/src/features/events/components/ModelList";
 import { EventRecord } from "@/types";
 import { groupByDate } from "@/utils/groupByDate";
 
